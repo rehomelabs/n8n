@@ -1,0 +1,15 @@
+﻿id,exit_code,definition,severity,recommendation,createdAt,updatedAt
+2,0,Process exited successfully,Info,No action required,2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+3,1,General application error,Warning,Check the container logs for the application-specific error,2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+4,2,Application or shell reported misuse/invalid arguments,Warning,"Check the container command, entrypoint, arguments, and logs",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+5,125,Docker failed to start or run the container command,Critical,"Check Docker daemon logs, runtime configuration, mounts, networking, and Docker command errors",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+6,126,Container command was found but could not be executed,Critical,"Check executable permissions, architecture, entrypoint, and mounted files",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+7,127,Container command or executable was not found,Critical,"Check the image, PATH, command, and entrypoint configuration",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+8,128,Invalid exit argument or application-specific fatal error,Warning,Check application logs; do not assume a signal unless the code is greater than 128,2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+9,129,Process terminated by SIGHUP (signal 1),Warning,Check whether the process received a terminal/session hangup or an external signal,2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+10,130,Process terminated by SIGINT (signal 2),Warning,"Check for an interactive interrupt, stop action, or external SIGINT",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+11,134,Process terminated by SIGABRT (signal 6),Critical,"Check application logs, crash output, assertions, and core dumps",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+12,137,Process terminated by SIGKILL (signal 9),Critical,"Check for an out-of-memory kill, forced container stop, or external SIGKILL",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+13,139,Process terminated by SIGSEGV (signal 11),Critical,"Check application crash logs, core dumps, native libraries, and memory corruption",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+14,141,Process terminated by SIGPIPE (signal 13),Warning,"Check broken pipes, closed downstream connections, and application logs",2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z
+15,143,Process terminated by SIGTERM (signal 15),Warning,Often associated with a normal Docker stop/restart; confirm whether the shutdown was expected,2026-08-11T15:34:52.401Z,2026-08-11T15:34:52.401Z

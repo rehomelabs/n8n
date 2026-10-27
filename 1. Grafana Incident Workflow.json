@@ -1,0 +1,2143 @@
+{
+  "name": "1. Grafana Incident Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "b45b0ccf-3e6a-4929-8d75-9143ba22a590",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "da653dcd-916a-4f3d-87ad-006b2c97dad7",
+      "name": "Webhook",
+      "webhookId": "b45b0ccf-3e6a-4929-8d75-9143ba22a590"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "incident_id": "={{ 'INC-' + $now.toFormat('yyyyLLdd') + '-' + $execution.id }}",
+            "container_name": "={{ $('Webhook').item.json.body.alerts[0].labels.name }}",
+            "instance_name": "={{ $('Webhook').item.json.body.alerts[0].labels.instance }}",
+            "synopsis": "={{ $('Webhook').item.json.body.alerts[0].annotations.summary }}",
+            "status": "={{ $('Webhook').item.json.body.status }}",
+            "First_Alert_Sent": true,
+            "Severity": "={{ $json.severity }}",
+            "Details": "={{ $json.definition }}",
+            "recomendation": "={{ $json.recommendation }}",
+            "exit_code": "={{ $json.exit_code }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2064,
+        -336
+      ],
+      "id": "7e2a15b4-3f31-4718-872d-0315db262042",
+      "name": "Create Incident"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "container_name",
+              "keyValue": "={{ $json.body.alerts[0].labels.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        -96
+      ],
+      "id": "64a09318-fbec-42d6-872a-ce372b873c24",
+      "name": "Existing Incident?",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "instance_name",
+              "keyValue": "={{ $json.instance_name }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        -576
+      ],
+      "id": "aaba6077-b9d3-49ee-91a9-428ae3db8574",
+      "name": "Remove Incident",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "roomId": "!VhxiEpgfIkKrOiruPM:matrix.rehomelabs.com",
+        "text": "=<strong>✅ Grafana Alert</strong><br> <br> <strong>Incident:</strong> {{ $('Get Incident').item.json.incident_id }}<br> <strong>Status:</strong> Resovled<br> <strong>Container:</strong> {{ $('Get Incident').item.json.container_name }}<br>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        -560
+      ],
+      "id": "ce7b7ca5-0d44-4916-b9f9-0013231cb6f3",
+      "name": "Send Incident Resolution Message",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "roomId": "={{ $('Create Room for Incident').item.json.room_id }}",
+        "text": "=<strong>🚨 Grafana Alert</strong><br> \n<br> \n<strong>Incident:</strong> {{ $('Update Incident with RoomID').item.json.incident_id }}<br>\n<strong>Status:</strong> Firing<br>\n<strong>Severity:</strong> {{ $('Update Incident with RoomID').item.json.Severity }}<br>\n<strong>Container:</strong> {{ $('Update Incident with RoomID').item.json.container_name }}<br>\n<strong>Exit Code:</strong> {{ $('Get Docker Exit Codes').item.json.exit_code }}<br>\n<strong>Description:</strong> {{ $('Update Incident with RoomID').item.json.synopsis }}<br>\n<strong>Recommendation:</strong> {{ $('Update Incident with RoomID').item.json.recomendation }}<br>\n<br> <br> \n\n<a href=\"https://n8n.rehomelabs.com/webhook/852e2678-d784-492b-ba49-3b48458866de/incident-ack/{{ $('Update Incident with RoomID').item.json.incident_id }}\">\n ✅ Acknowledge Incident\n </a>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2896,
+        -336
+      ],
+      "id": "e7f46ee1-1882-4906-8199-b5c91d0e8512",
+      "name": "Send Incident Alert Mesage",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Grab the raw text output from the previous docker command\nconst rawOutput = $input.first().json.stdout || '';\n\n// Split the output into individual lines and remove empty rows\nconst lines = rawOutput.trim().split('\\n');\n\n// If there's only a header or nothing at all, stop here\nif (lines.length <= 1) {\n  return [{ json: { message: \"No matching containers found\" } }];\n}\n\nconst containers = [];\n\n// Skip the header row and loop through the data\nfor (let i = 1; i < lines.length; i++) {\n  const line = lines[i].trim();\n  \n  // Split by clusters of 2 or more spaces to isolate columns cleanly\n  const parts = line.split(/\\s{2,}/); \n  \n  if (parts.length >= 3) {\n    const rawId = parts[0];\n    const name = parts[parts.length - 1]; // Name is typically the last element\n    \n    // Find the text block that contains the runtime status info\n    const rawStatus = parts.find(p => p.startsWith('Exited') || p.startsWith('Up') || p.startsWith('Created')) || '';\n\n    // Clean up the status down to just the pure exit code number\n    let exitCode = \"unknown\";\n    \n    if (rawStatus.startsWith('Up')) {\n      exitCode = \"0\"; // Container is currently running fine\n    } else {\n      // Look for any numbers trapped inside parentheses, e.g., Exited (143)\n      const match = rawStatus.match(/\\((\\d+)\\)/);\n      if (match) {\n        exitCode = match[1]; // Extract just the digits\n      }\n    }\n\n    containers.push({\n      id: rawId.split(' ')[0], // Grabs only the first word to ensure it's just the ID\n      name: name,\n      exit_code: exitCode\n    });\n  }\n}\n\nreturn containers.map(c => ({ json: c }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        -336
+      ],
+      "id": "38b79e49-622f-40cd-bed9-a427269a0b0f",
+      "name": "Format Docker ps"
+    },
+    {
+      "parameters": {
+        "command": "=docker ps -a --filter name={{ $('Webhook').item.json.body.alerts[0].labels.name }}\n\n"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -336
+      ],
+      "id": "2630d0a5-6617-4eb9-bb94-7cb4d9ac703d",
+      "name": "Get Container Exit Code",
+      "credentials": {
+        "sshPassword": {
+          "id": "MmLa41ALHxNLWgZU",
+          "name": "docker-prod-1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    },
+                    "id": "d37b52db-9ea0-4851-8f4d-7d1058e3bf6c"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Create Incident"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4596cdfe-1a30-4b1b-a176-eab717383842",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "acknowledged",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Acknowledged"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -96
+      ],
+      "id": "d8208c72-b8ed-4b13-8785-907f01afc8c5",
+      "name": "Parse Incident Status"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.alerts[0].labels.instance }}",
+                    "rightValue": "docker-prod-1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "bb5f889c-8b2c-4ba9-8859-1a9509f79e9b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "docker-prod-1"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e73fd38c-c855-44ab-b821-3145aef9ec25",
+                    "leftValue": "={{ $('Webhook').item.json.body.alerts[0].labels.instance }}",
+                    "rightValue": "docker-prod-2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "docker-prod-2"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1168,
+        -112
+      ],
+      "id": "b7616c60-48e0-4735-a58b-d150c155a96a",
+      "name": "Host Select*"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "f535ZnZ3LuO6exyo",
+          "mode": "list",
+          "cachedResultName": "Docker Exit Codes",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/f535ZnZ3LuO6exyo"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "exit_code",
+              "keyValue": "={{ $json.exit_code }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1856,
+        -336
+      ],
+      "id": "d655914f-0c9b-4070-8894-eb9e4e184ca2",
+      "name": "Get Docker Exit Codes"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "instance_name",
+              "keyValue": "={{ $json.body.alerts[0].labels.instance }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        -576
+      ],
+      "id": "aa3db39e-c7c2-4465-8e87-78cd0ecd4912",
+      "name": "Get Incident",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "command": "=docker ps -a --filter name={{ $('Webhook').item.json.body.alerts[0].labels.name }}\n\n"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -96
+      ],
+      "id": "35962d54-2127-4fc9-ba89-b207233e8192",
+      "name": "Get Container Exit Code_H2",
+      "credentials": {
+        "sshPassword": {
+          "id": "GQOt6vjb337xOWQV",
+          "name": "docker-prod-2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Grab the raw text output from the previous docker command\nconst rawOutput = $input.first().json.stdout || '';\n\n// Split the output into individual lines and remove empty rows\nconst lines = rawOutput.trim().split('\\n');\n\n// If there's only a header or nothing at all, stop here\nif (lines.length <= 1) {\n  return [{ json: { message: \"No matching containers found\" } }];\n}\n\nconst containers = [];\n\n// Skip the header row and loop through the data\nfor (let i = 1; i < lines.length; i++) {\n  const line = lines[i].trim();\n  \n  // Split by clusters of 2 or more spaces to isolate columns cleanly\n  const parts = line.split(/\\s{2,}/); \n  \n  if (parts.length >= 3) {\n    const rawId = parts[0];\n    const name = parts[parts.length - 1]; // Name is typically the last element\n    \n    // Find the text block that contains the runtime status info\n    const rawStatus = parts.find(p => p.startsWith('Exited') || p.startsWith('Up') || p.startsWith('Created')) || '';\n\n    // Clean up the status down to just the pure exit code number\n    let exitCode = \"unknown\";\n    \n    if (rawStatus.startsWith('Up')) {\n      exitCode = \"0\"; // Container is currently running fine\n    } else {\n      // Look for any numbers trapped inside parentheses, e.g., Exited (143)\n      const match = rawStatus.match(/\\((\\d+)\\)/);\n      if (match) {\n        exitCode = match[1]; // Extract just the digits\n      }\n    }\n\n    containers.push({\n      id: rawId.split(' ')[0], // Grabs only the first word to ensure it's just the ID\n      name: name,\n      exit_code: exitCode\n    });\n  }\n}\n\nreturn containers.map(c => ({ json: c }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        -96
+      ],
+      "id": "4b75a1b2-082c-49b4-acd2-ae4fed455dc2",
+      "name": "Format Docker ps_H2"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "f535ZnZ3LuO6exyo",
+          "mode": "list",
+          "cachedResultName": "Docker Exit Codes",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/f535ZnZ3LuO6exyo"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "exit_code",
+              "keyValue": "={{ $json.exit_code }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1856,
+        -96
+      ],
+      "id": "c067ced9-cd0b-4528-8230-1e0a58a9433e",
+      "name": "Get Docker Exit Codes_H2",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "incident_id": "={{ 'INC-' + $now.toFormat('yyyyLLdd') + '-' + $execution.id }}",
+            "container_name": "={{ $('Webhook').item.json.body.alerts[0].labels.name }}",
+            "instance_name": "={{ $('Webhook').item.json.body.alerts[0].labels.instance }}",
+            "synopsis": "={{ $('Webhook').item.json.body.alerts[0].annotations.summary }}",
+            "status": "={{ $('Webhook').item.json.body.status }}",
+            "First_Alert_Sent": true,
+            "Severity": "={{ $json.severity }}",
+            "Details": "={{ $json.definition }}",
+            "recomendation": "={{ $json.recommendation }}",
+            "exit_code": "={{ $json.exit_code }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2064,
+        -96
+      ],
+      "id": "9a51fa64-00de-42fa-b60e-262a29710110",
+      "name": "Create Incident_H2"
+    },
+    {
+      "parameters": {
+        "roomId": "={{ $('Create Room for Incident_H2').item.json.room_id }}",
+        "text": "=<strong>🚨 Grafana Alert</strong><br> \n<br> \n<strong>Incident:</strong> {{ $('Update Incident with RoomID_H2').item.json.incident_id }}<br>\n<strong>Status:</strong> Firing<br>\n<strong>Severity:</strong> {{ $('Update Incident with RoomID_H2').item.json.Severity }}<<br>\n<strong>Container:</strong> {{ $('Update Incident with RoomID_H2').item.json.container_name }}<br>\n<strong>Exit Code:</strong> {{ $('Get Docker Exit Codes_H2').item.json.exit_code }}<br>\n<strong>Description:</strong> {{ $('Update Incident with RoomID_H2').item.json.synopsis }}<br>\n<strong>Recommendation:</strong> {{ $('Update Incident with RoomID_H2').item.json.recomendation }}<br>\n<br> <br> \n\n<a href=\"https://n8n.rehomelabs.com/webhook/852e2678-d784-492b-ba49-3b48458866de/incident-ack/{{ $('Update Incident with RoomID_H2').item.json.incident_id }}\">\n ✅ Acknowledge Incident\n </a>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2896,
+        -96
+      ],
+      "id": "3b697acc-c702-4453-9b67-66d051a8b11d",
+      "name": "Send Incident Alert Mesage_H2",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "roomName": "={{ $json.incident_id }}-{{ $json.container_name }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        -96
+      ],
+      "id": "4dcd33cc-1edc-4339-9bdd-eb18e775d593",
+      "name": "Create Room for Incident_H2",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "roomName": "={{ $json.incident_id }}-{{ $json.container_name }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        -336
+      ],
+      "id": "cd453232-d25c-44fb-8742-8dac9ad8b79c",
+      "name": "Create Room for Incident",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "incident_id",
+              "keyValue": "={{ $('Create Incident').item.json.incident_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First_Alert_Sent": false,
+            "matrix_room_id": "={{ $json.room_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "matrix_room_id",
+              "displayName": "matrix_room_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2480,
+        -336
+      ],
+      "id": "5599ca74-9b18-4852-8995-54b9f96b4278",
+      "name": "Update Incident with RoomID"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "incident_id",
+              "keyValue": "={{ $('Create Incident_H2').item.json.incident_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First_Alert_Sent": false,
+            "matrix_room_id": "={{ $json.room_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "matrix_room_id",
+              "displayName": "matrix_room_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        2480,
+        -96
+      ],
+      "id": "210c4d83-2df6-4bd9-af42-6c7652997be7",
+      "name": "Update Incident with RoomID_H2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.alerts[0].status }}",
+                    "rightValue": "resolved",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "de825139-b0a2-4eee-bca6-3ff234a17375"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Resolved"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "174bf6ac-b873-4082-ba15-f9e2c7a8f6ca",
+                    "leftValue": "={{ $json.body.status }}",
+                    "rightValue": "firing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Firing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "3fccb349-89fa-4968-a8c4-970ddb1efe59",
+      "name": "Incident Status"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.alerts[0].labels.alertname }}",
+                    "rightValue": "Docker Container Stopped",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "71abdcdf-9cb0-4da0-b5cd-64c1d44431c6"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Container Stopped"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "362fc082-6739-469b-a2fa-539c06aa1ce2",
+                    "leftValue": "={{ $('Webhook').item.json.body.alerts[0].labels.alertname }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Other Alerts"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        176
+      ],
+      "id": "068e33de-1daa-4302-ac64-eec5fd117b85",
+      "name": "Parse Alert Type"
+    },
+    {
+      "parameters": {
+        "roomId": "!VhxiEpgfIkKrOiruPM:matrix.rehomelabs.com",
+        "text": "=<strong>✅ Grafana Alert</strong><br> <br> <strong>Incident:</strong> {{ $('Get Incident').item.json.incident_id }}<br> <strong>Status:</strong> Resovled<br> <strong>Description:</strong> {{ $('Get Incident').item.json.synopsis }}<br>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        -784
+      ],
+      "id": "4ace9e01-3400-4e00-8758-7c1be8613939",
+      "name": "Send Incident Resolution Message1",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "operation": "leave",
+        "roomId": "={{ $json.matrix_room_id }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        -576
+      ],
+      "id": "c507dd41-4acc-4b55-9f42-2a8e36139143",
+      "name": "Remove User from Room",
+      "credentials": {
+        "matrixApi": {
+          "id": "d2cSKke0X9w0ll3J",
+          "name": "MATRIX_ME_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "operation": "join",
+        "roomIdOrAlias": "={{ $json.matrix_room_id }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        -336
+      ],
+      "id": "c7a0699b-fd69-411e-a486-3c803cbfcc38",
+      "name": "Join User Account",
+      "credentials": {
+        "matrixApi": {
+          "id": "d2cSKke0X9w0ll3J",
+          "name": "MATRIX_ME_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "operation": "join",
+        "roomIdOrAlias": "={{ $json.matrix_room_id }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        2688,
+        -96
+      ],
+      "id": "5229130d-b33a-4653-9e32-253827174987",
+      "name": "Join User Account_H2",
+      "credentials": {
+        "matrixApi": {
+          "id": "d2cSKke0X9w0ll3J",
+          "name": "MATRIX_ME_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "operation": "leave",
+        "roomId": "={{ $('Get Incident').item.json.matrix_room_id }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1312,
+        -576
+      ],
+      "id": "912cf20c-50ab-464e-9d12-a5590bfa3faf",
+      "name": "Remove n8n From Room",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9faf3d76-833d-40bd-9e90-3eeebe52925b",
+              "leftValue": "={{ $('Get Incident').item.json.container_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1536,
+        -576
+      ],
+      "id": "39df675d-24de-4f99-831e-b3c097d0d1d8",
+      "name": "If Container Field Empty"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "incident_id": "={{ 'INC-' + $now.toFormat('yyyyLLdd') + '-' + $execution.id }}",
+            "container_name": "={{ $('Webhook').item.json.body.alerts[0].labels.name }}",
+            "instance_name": "={{ $('Webhook').item.json.body.alerts[0].labels.instance }}",
+            "synopsis": "={{ $('Webhook').item.json.body.alerts[0].annotations.summary }}",
+            "status": "={{ $('Webhook').item.json.body.status }}",
+            "First_Alert_Sent": true,
+            "Details": "={{ $json.definition }}",
+            "Severity": "={{ $('Webhook').item.json.body.alerts[0].labels.severity }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "matrix_room_id",
+              "displayName": "matrix_room_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        656,
+        192
+      ],
+      "id": "45d13acf-7ab2-4455-8d67-f82265d84059",
+      "name": "Create Incident 2"
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "roomName": "={{ $json.incident_id }}-{{ $('Webhook').item.json.body.alerts[0].labels.alertname }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        848,
+        192
+      ],
+      "id": "ff27fe79-fb6c-47fe-8d2d-bc59cae219a4",
+      "name": "Create Room for Incident 2",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "incident_id",
+              "keyValue": "={{ $('Create Incident 2').item.json.incident_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "matrix_room_id": "={{ $json.room_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "matrix_room_id",
+              "displayName": "matrix_room_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        192
+      ],
+      "id": "660dc717-5f43-4a73-90c7-a834bdebed36",
+      "name": "Update Incident with RoomID 2"
+    },
+    {
+      "parameters": {
+        "resource": "room",
+        "operation": "join",
+        "roomIdOrAlias": "={{ $json.matrix_room_id }}"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        192
+      ],
+      "id": "b90d84b7-4be0-40fe-b11b-8900de90fd47",
+      "name": "Join User Account 2",
+      "credentials": {
+        "matrixApi": {
+          "id": "d2cSKke0X9w0ll3J",
+          "name": "MATRIX_ME_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "roomId": "={{ $('Create Room for Incident 2').item.json.room_id }}",
+        "text": "=<strong>🚨 Grafana Alert</strong><br> \n<br> \n<strong>Incident:</strong> {{ $('Update Incident with RoomID 2').item.json.incident_id }}<br>\n<strong>Status:</strong> Firing<br>\n<strong>Severity:</strong> {{ $('Update Incident with RoomID 2').item.json.Severity }}<br>\n<strong>Description:</strong> {{ $('Update Incident with RoomID 2').item.json.synopsis }}<br>\n\n<br> <br> \n\n<a href=\"https://n8n.rehomelabs.com/webhook/852e2678-d784-492b-ba49-3b48458866de/incident-ack/{{ $('Update Incident with RoomID 2').item.json.incident_id }}\">\n ✅ Acknowledge Incident\n </a>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        192
+      ],
+      "id": "6d6571e3-c069-4f56-b1de-2bf26e8450d8",
+      "name": "Send Incident Alert Message 2",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.rehomelabs.com",
+            "user-agent": "Grafana",
+            "content-length": "3207",
+            "accept-encoding": "gzip",
+            "content-type": "application/json",
+            "x-forwarded-for": "192.168.68.152",
+            "x-forwarded-host": "n8n.rehomelabs.com",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "d84935ac6fc7",
+            "x-real-ip": "192.168.68.152"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "receiver": "n8n-Docker",
+            "status": "firing",
+            "alerts": [
+              {
+                "status": "firing",
+                "labels": {
+                  "alertname": "Docker Container Stopped",
+                  "grafana_folder": "Homelab",
+                  "instance": "docker-prod-2",
+                  "name": "vaultwarden",
+                  "severity": "critical"
+                },
+                "annotations": {
+                  "description": "Container, vaultwarden on docker-prod-2 has not been reported by alloy for %!f(<nil>) seconds.",
+                  "summary": "vaultwarden has exited."
+                },
+                "startsAt": "2026-09-04T16:31:40-05:00",
+                "endsAt": "0001-01-01T00:00:00Z",
+                "generatorURL": "https://grafana.rehomelabs.com/alerting/grafana/afv396x2wc5q8f/view?orgId=1",
+                "fingerprint": "cbf5f6e25d7a206c",
+                "silenceURL": "https://grafana.rehomelabs.com/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dafv396x2wc5q8f&matcher=instance%3Ddocker-prod-2&matcher=name%3Dvaultwarden&matcher=severity%3Dcritical&orgId=1",
+                "dashboardURL": "",
+                "panelURL": "",
+                "ruleUID": "afv396x2wc5q8f",
+                "values": {
+                  "A": 122,
+                  "C": 1
+                },
+                "valueString": "[ var='A' labels={instance=docker-prod-2, name=vaultwarden} type='query' value=122 ], [ var='C' labels={instance=docker-prod-2, name=vaultwarden} type='threshold' value=1 ]",
+                "orgId": 1
+              }
+            ],
+            "groupLabels": {
+              "__alert_rule_uid__": "afv396x2wc5q8f",
+              "__grafana_autogenerated__": "true",
+              "__grafana_receiver__": "n8n-Docker",
+              "__grafana_route_settings_hash__": "585d69d6ec2fad6e",
+              "alertname": "Docker Container Stopped",
+              "grafana_folder": "Homelab",
+              "instance": "docker-prod-2",
+              "name": "vaultwarden",
+              "severity": "critical"
+            },
+            "commonLabels": {
+              "alertname": "Docker Container Stopped",
+              "grafana_folder": "Homelab",
+              "instance": "docker-prod-2",
+              "name": "vaultwarden",
+              "severity": "critical"
+            },
+            "commonAnnotations": {
+              "description": "Container, vaultwarden on docker-prod-2 has not been reported by alloy for %!f(<nil>) seconds.",
+              "summary": "vaultwarden has exited."
+            },
+            "externalURL": "https://grafana.rehomelabs.com/",
+            "appVersion": "13.1.0",
+            "version": "1",
+            "groupKey": "{}/{__grafana_autogenerated__=\"true\"}/{__grafana_receiver__=\"n8n-Docker\"}/{__grafana_route_settings_hash__=\"585d69d6ec2fad6e\"}:{__alert_rule_uid__=\"afv396x2wc5q8f\", __grafana_autogenerated__=\"true\", __grafana_receiver__=\"n8n-Docker\", __grafana_route_settings_hash__=\"585d69d6ec2fad6e\", alertname=\"Docker Container Stopped\", grafana_folder=\"Homelab\", instance=\"docker-prod-2\", name=\"vaultwarden\", severity=\"critical\"}",
+            "truncatedAlerts": 0,
+            "orgId": 1,
+            "title": "[FIRING:1] Docker Container Stopped afv396x2wc5q8f true n8n-Docker 585d69d6ec2fad6e Homelab docker-prod-2 vaultwarden critical ",
+            "state": "alerting",
+            "message": "**Firing**\n\nValue: A=122, C=1\nLabels:\n - alertname = Docker Container Stopped\n - grafana_folder = Homelab\n - instance = docker-prod-2\n - name = vaultwarden\n - severity = critical\nAnnotations:\n - description = Container, vaultwarden on docker-prod-2 has not been reported by alloy for %!f(<nil>) seconds.\n - summary = vaultwarden has exited.\nSource: https://grafana.rehomelabs.com/alerting/grafana/afv396x2wc5q8f/view?orgId=1\nSilence: https://grafana.rehomelabs.com/alerting/silence/new?alertmanager=grafana&matcher=__alert_rule_uid__%3Dafv396x2wc5q8f&matcher=instance%3Ddocker-prod-2&matcher=name%3Dvaultwarden&matcher=severity%3Dcritical&orgId=1\n"
+          },
+          "webhookUrl": "https://n8n.rehomelabs.com/webhook/b45b0ccf-3e6a-4929-8d75-9143ba22a590",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Incident Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Incident": {
+      "main": [
+        [
+          {
+            "node": "Create Room for Incident",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Existing Incident?": {
+      "main": [
+        [
+          {
+            "node": "Parse Incident Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Incident": {
+      "main": [
+        [
+          {
+            "node": "Remove User from Room",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Docker ps": {
+      "main": [
+        [
+          {
+            "node": "Get Docker Exit Codes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Container Exit Code": {
+      "main": [
+        [
+          {
+            "node": "Format Docker ps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Incident Status": {
+      "main": [
+        [
+          {
+            "node": "Host Select*",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Host Select*": {
+      "main": [
+        [
+          {
+            "node": "Get Container Exit Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Container Exit Code_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Docker Exit Codes": {
+      "main": [
+        [
+          {
+            "node": "Create Incident",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Incident": {
+      "main": [
+        [
+          {
+            "node": "Remove Incident",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Container Exit Code_H2": {
+      "main": [
+        [
+          {
+            "node": "Format Docker ps_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Docker ps_H2": {
+      "main": [
+        [
+          {
+            "node": "Get Docker Exit Codes_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Docker Exit Codes_H2": {
+      "main": [
+        [
+          {
+            "node": "Create Incident_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Incident_H2": {
+      "main": [
+        [
+          {
+            "node": "Create Room for Incident_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Room for Incident_H2": {
+      "main": [
+        [
+          {
+            "node": "Update Incident with RoomID_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Room for Incident": {
+      "main": [
+        [
+          {
+            "node": "Update Incident with RoomID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Incident with RoomID": {
+      "main": [
+        [
+          {
+            "node": "Join User Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Incident with RoomID_H2": {
+      "main": [
+        [
+          {
+            "node": "Join User Account_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Incident Resolution Message": {
+      "main": [
+        []
+      ]
+    },
+    "Incident Status": {
+      "main": [
+        [
+          {
+            "node": "Get Incident",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Alert Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Alert Type": {
+      "main": [
+        [
+          {
+            "node": "Existing Incident?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Incident 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove User from Room": {
+      "main": [
+        [
+          {
+            "node": "Remove n8n From Room",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Join User Account": {
+      "main": [
+        [
+          {
+            "node": "Send Incident Alert Mesage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Join User Account_H2": {
+      "main": [
+        [
+          {
+            "node": "Send Incident Alert Mesage_H2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove n8n From Room": {
+      "main": [
+        [
+          {
+            "node": "If Container Field Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Container Field Empty": {
+      "main": [
+        [
+          {
+            "node": "Send Incident Resolution Message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Incident Resolution Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Incident 2": {
+      "main": [
+        [
+          {
+            "node": "Create Room for Incident 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Room for Incident 2": {
+      "main": [
+        [
+          {
+            "node": "Update Incident with RoomID 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Incident with RoomID 2": {
+      "main": [
+        [
+          {
+            "node": "Join User Account 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Join User Account 2": {
+      "main": [
+        [
+          {
+            "node": "Send Incident Alert Message 2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "452b8dba-8363-49d8-bae9-f309389bb805",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "14f8442495c9c127742d6f06e206ed82ba869f97d15862cc7532c2475a5c9559"
+  },
+  "nodeGroups": [],
+  "id": "xSDByFb5HQvZAUZh",
+  "tags": []
+}

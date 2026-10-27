@@ -1,0 +1,383 @@
+{
+  "name": "2. Acknowledge Grafana Incident",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "incident-ack/:incident_number",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3f15e9fa-37eb-4b60-bd04-44e266e95953",
+      "name": "Webhook",
+      "webhookId": "852e2678-d784-492b-ba49-3b48458866de"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "incident_id",
+              "keyValue": "={{ $json.params.incident_number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "c4d37950-ac69-4450-9326-e80f83fb1187",
+      "name": "Get Open Incident",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "NdBdgdwzfxCKPxtI",
+          "mode": "list",
+          "cachedResultName": "Grafana Incident Tracking",
+          "cachedResultUrl": "/projects/ru8rqwGgQwsLbvkK/datatables/NdBdgdwzfxCKPxtI"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "incident_id",
+              "keyValue": "={{ $json.incident_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "First_Alert_Sent": true,
+            "status": "Acknowledged"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "incident_id",
+              "displayName": "incident_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "instance_name",
+              "displayName": "instance_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "container_name",
+              "displayName": "container_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "synopsis",
+              "displayName": "synopsis",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "First_Alert_Sent",
+              "displayName": "First_Alert_Sent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Details",
+              "displayName": "Details",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Severity",
+              "displayName": "Severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "recomendation",
+              "displayName": "recomendation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "exit_code",
+              "displayName": "exit_code",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "matrix_room_id",
+              "displayName": "matrix_room_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "2ffe7eef-1008-4c09-835c-7ccd88e7fd18",
+      "name": "Set Status to Acknowledged",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "roomId": "={{ $json.matrix_room_id }}",
+        "text": "=<strong>🚨 Grafana Alert</strong><br> \n<br> \n<strong>Incident:</strong> {{ $('Get Open Incident').item.json.incident_id }}<br> \n<strong>Status:</strong> {{ $json.status }}<br>\n<strong>Severity:</strong> {{ $json.Severity }}<br>\n<strong>Container:</strong> {{ $('Get Open Incident').item.json.container_name }}<br> \n<strong>Exit Code:</strong> {{ $json.exit_code }}<br>\n<strong>Description:</strong> {{ $json.synopsis }}<br>\n<strong>Recommendation:</strong> {{ $json.recomendation }}<br>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        992,
+        96
+      ],
+      "id": "cbdf3777-fa40-4891-a8fc-0794e62e168c",
+      "name": "Send Status Change Confirmation",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "roomId": "={{ $json.matrix_room_id }}",
+        "text": "=<strong>🚨 Grafana Alert</strong><br> \n<br> \n<strong>Incident:</strong> {{ $('Get Open Incident').item.json.incident_id }}<br> \n<strong>Status:</strong> {{ $json.status }}<br>\n<strong>Severity:</strong> {{ $json.Severity }}<br>\n<strong>Description:</strong> {{ $json.synopsis }}<br>",
+        "messageFormat": "org.matrix.custom.html",
+        "fallbackText": "test"
+      },
+      "type": "n8n-nodes-base.matrix",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -144
+      ],
+      "id": "cdad46d3-531c-457a-acac-9c4266904f43",
+      "name": "Send Status Change Confirmation 2",
+      "credentials": {
+        "matrixApi": {
+          "id": "aUHv1AoyzVZzsDoD",
+          "name": "MATRIX_N8N_ACCESS_TOKEN"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7860165b-396e-47f0-9422-1e01becbe675",
+              "leftValue": "={{ $json.container_name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        656,
+        0
+      ],
+      "id": "c242bb40-e0fc-477d-828a-dc6407a947de",
+      "name": "If Container Field is Empty"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.rehomelabs.com",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:153.0) Gecko/20100101 Firefox/153.0",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9",
+            "cookie": "rl_session=RudderEncrypt%3AU2FsdGVkX1%2BxWMm6olnfCNneRfBorapd02Tik266bdEbzGtbduo8tazQwkdKOiZW3xk4tiDv%2Fpk2TMGPz69g88of67Dap8NEyESBTjcbOPDRZC4%2FU%2F930N9%2BAwiPl6Z5DB%2F8NaQTWgfnxlntivqCMQ%3D%3D; rl_anonymous_id=RudderEncrypt%3AU2FsdGVkX19YXjdjkQikHNXJEdPY4HPYLy32%2FDSemFpvZDuoXtS0yTA7drwuzpBzbhwyCdpJA6hmN0CRg3ZLDw%3D%3D; rl_page_init_referrer=RudderEncrypt%3AU2FsdGVkX1%2B3M620o3%2BWApc%2BAI0oC7lkcBy1ImLhAIM%3D; rl_page_init_referring_domain=RudderEncrypt%3AU2FsdGVkX1%2BxWnCJR%2F77MgDQEV3PlbsC%2BIbz%2BlZxj9M%3D; ph_phc_swoSUd69FLA4ztGPkBhnNHDVbrssfPkuYEGCquN33FCX_posthog=%7B%22%24device_id%22%3A%22019fd7ed-41c2-7f25-8d2f-3fb3407c4270%22%2C%22distinct_id%22%3A%22019fd7ed-41c2-7f25-8d2f-3fb3407c4270%22%2C%22%24sesid%22%3A%5Bnull%2Cnull%2Cnull%5D%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Finf.rehomelabs.com%2Forganizations%2F6362ba0d-0dae-481a-9506-f5ae79740a2f%2Fprojects%2Fsecret-management%2F9199a582-1067-473b-b2ab-a4b9c46674c9%2Foverview%22%7D%2C%22%24user_state%22%3A%22anonymous%22%7D; rl_user_id=RudderEncrypt%3AU2FsdGVkX1%2BSzV%2F5zTZIKUMAbefqCU9Sxz1KJrDqcaxbtul4QgTywIdrOzD7EZ3WHFcpHZLRcs5soQsp0kYQoM%2BMfjtry8V06u9h%2FlxqrjcqqhOTWOwAZpqfP8geZOjtaFbU2CeKSM3OqcFUPX9st4eBy8wRH%2FZKYMOc6ZUj3G4%3D; rl_trait=RudderEncrypt%3AU2FsdGVkX1%2FIlWgBLw%2FgnAwFhMPNugb0HZzTUYo3UICTMEEArb0tPe0CorPY5Db1x2XhAT%2BhQwRGyZS3AOgtXUNU0BsL4VxBaKuntX7vqG2hyDCYpnsXlc98OuITrYheom7HHgU32kyjQ%2B4rJOTJ901vzPERJ3GJkNaPwID7eL3jq6YB4TsebEXMCasFsFJSWgeWuzEkWdyf57QRxJhfNQ%3D%3D; ph_phc_kMstNfAgBcBkWSh6KdsgN09heqqNe5VNmalHP1Ni9Q4_posthog=%7B%22%24device_id%22%3A%2214f8442495c9c127742d6f06e206ed82ba869f97d15862cc7532c2475a5c9559%2319e92513-3559-47d8-9cf8-651a22329176%22%2C%22distinct_id%22%3A%2214f8442495c9c127742d6f06e206ed82ba869f97d15862cc7532c2475a5c9559%2319e92513-3559-47d8-9cf8-651a22329176%22%2C%22%24sesid%22%3A%5B1786471172113%2C%22019ff1fa-1f0f-7ef7-9819-9dc856dfb405%22%2C1786471128847%5D%2C%22%24epp%22%3Atrue%2C%22%24initial_person_info%22%3A%7B%22r%22%3A%22%24direct%22%2C%22u%22%3A%22https%3A%2F%2Fn8n.lab.rehomelabs.com%2Fsetup%22%7D%2C%22%24user_state%22%3A%22identified%22%7D",
+            "priority": "u=0, i",
+            "sec-fetch-dest": "document",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-site": "none",
+            "sec-fetch-user": "?1",
+            "sec-gpc": "1",
+            "te": "trailers",
+            "upgrade-insecure-requests": "1",
+            "x-forwarded-for": "192.168.68.169",
+            "x-forwarded-host": "n8n.rehomelabs.com",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "d84935ac6fc7",
+            "x-real-ip": "192.168.68.169"
+          },
+          "params": {
+            "incident_number": "INC-20260904-2406"
+          },
+          "query": {},
+          "body": {},
+          "webhookUrl": "https://n8n.rehomelabs.com/webhook/852e2678-d784-492b-ba49-3b48458866de/incident-ack/:incident_number",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get Open Incident",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Open Incident": {
+      "main": [
+        [
+          {
+            "node": "Set Status to Acknowledged",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Status to Acknowledged": {
+      "main": [
+        [
+          {
+            "node": "If Container Field is Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Container Field is Empty": {
+      "main": [
+        [
+          {
+            "node": "Send Status Change Confirmation 2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Status Change Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7f58caa6-3b9d-44a3-8b1e-4725d2b1d704",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "14f8442495c9c127742d6f06e206ed82ba869f97d15862cc7532c2475a5c9559"
+  },
+  "nodeGroups": [],
+  "id": "rlF0eFYlm0z0Y5KP",
+  "tags": []
+}
